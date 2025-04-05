@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
-import { CarDto } from '../models/car.dto';
+import { CarDto } from '../../shared/models/car.dto';
 
 @Injectable({
   providedIn: 'root'

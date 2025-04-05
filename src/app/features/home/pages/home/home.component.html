@@ -22,6 +22,15 @@
     <mat-card *ngFor="let car of availableCars" class="car-card">
       <mat-card-title>{{ car.type }}</mat-card-title>
       <mat-card-subtitle>{{ car.model }}</mat-card-subtitle>
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="accent"
+          (click)="goToReservation(car, filters.startDate, filters.endDate)"
+        >
+          Reservar
+        </button>
+      </mat-card-actions>
     </mat-card>
   </div>
 </div>
