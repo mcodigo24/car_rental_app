@@ -1,0 +1,21 @@
+.container {
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.loading,
+.no-results {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.results {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.car-card {
+  padding: 1rem;
+}
