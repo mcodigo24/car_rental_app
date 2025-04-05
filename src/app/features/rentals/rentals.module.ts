@@ -11,6 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RentalFormComponent } from './pages/rental-form/rental-form.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [RentalFormComponent],
@@ -25,7 +26,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatNativeDateModule,
     ReactiveFormsModule,
     MatGridListModule,
-    MatDividerModule
+    MatDividerModule,
+    MatProgressSpinnerModule
   ]
 })
 export class RentalsModule { }

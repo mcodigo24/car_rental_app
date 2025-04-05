@@ -9,6 +9,9 @@ import {
   style,
   animate
 } from '@angular/animations';
+import { RentalService } from '../../services/rental.service';
+import { CustomerDto } from '../../../shared/models/customer.dto';
+import { dateRangeValidator } from '../../../shared/validators/data-range.validator';
 
 @Component({
   selector: 'app-rental-form',
@@ -32,11 +35,13 @@ export class RentalFormComponent {
   rentalForm: FormGroup;
   selectedCar!: CarDto;
   step = 1;
+  isSubmitting = false;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private rentalService: RentalService
   ) {
     const nav = this.router.getCurrentNavigation();
     this.selectedCar = nav?.extras?.state?.['selectedCar'];
@@ -44,12 +49,15 @@ export class RentalFormComponent {
     const endDate = nav?.extras?.state?.['endDate'];
 
     this.rentalForm = this.fb.group({
-      customerID: ['', [Validators.required, Validators.minLength(7)]],
+      personID: ['', [Validators.required, Validators.minLength(7)]],
       fullName: ['', Validators.required],
       address: ['', Validators.required],
       startDate: [startDate ? new Date(startDate) : '', Validators.required],
       endDate: [endDate ? new Date(endDate) : '', Validators.required],
-    });
+    },
+      {
+        validators: dateRangeValidator
+      });
   }
 
   nextStep() {
@@ -59,18 +67,38 @@ export class RentalFormComponent {
   }
 
   confirmReservation() {
-    console.log('Reservation confirmed:', {
-      ...this.rentalForm.value,
-      car: this.selectedCar
-    });
+    this.isSubmitting = true;
+    const { personID, fullName, address, startDate, endDate } = this.rentalForm.value;
 
-    this.snackBar.open('Reservation successfully confirmed', 'Close', {
-      duration: 3000,
-    });
+    const customer: CustomerDto = {
+      personID: personID,
+      fullName,
+      address
+    };
 
-    this.rentalForm.reset();
-    this.step = 1;
-    this.router.navigate(['/']);
+    const rental = {
+      carId: this.selectedCar.id,
+      startDate,
+      endDate,
+    };
+
+    this.rentalService.registerRentalWithCustomer(customer, rental).subscribe({
+      next: () => {
+        this.snackBar.open('Reservation successfully confirmed', 'Close', {
+          duration: 2000,
+        });
+        this.rentalForm.reset();
+        this.step = 1;
+        this.router.navigate(['/']);
+        this.isSubmitting = false;
+      },
+      error: () => {
+        this.snackBar.open('Error while confirming reservation', 'Close', {
+          duration: 2000,
+        });
+        this.isSubmitting = false;
+      },
+    });
   }
 
   goBack() {

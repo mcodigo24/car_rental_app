@@ -1,5 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { dateRangeValidator } from '../../../shared/validators/data-range.validator';
 
 @Component({
   selector: 'app-car-filter-form',
@@ -23,6 +24,8 @@ export class CarFilterFormComponent implements OnInit {
       startDate: ['', Validators.required],
       endDate: ['', Validators.required],
       filter: ['']
+    }, {
+      validators: dateRangeValidator
     });
   }
 
