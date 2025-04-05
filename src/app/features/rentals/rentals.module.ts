@@ -12,9 +12,14 @@ import { RentalFormComponent } from './pages/rental-form/rental-form.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { RentalListComponent } from './pages/rental-list/rental-list.component';
 
 @NgModule({
-  declarations: [RentalFormComponent],
+  declarations: [
+    RentalFormComponent,
+    RentalListComponent
+  ],
   imports: [
     CommonModule,
     RentalsRoutingModule,
@@ -27,7 +32,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     ReactiveFormsModule,
     MatGridListModule,
     MatDividerModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTableModule
   ]
 })
 export class RentalsModule { }

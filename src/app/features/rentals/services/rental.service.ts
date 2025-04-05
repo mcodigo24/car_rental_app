@@ -1,12 +1,43 @@
 import { Injectable } from '@angular/core';
 import { CustomerDto } from '../../shared/models/customer.dto';
-import { delay, of, switchMap } from 'rxjs';
+import { delay, Observable, of, switchMap } from 'rxjs';
 import { RentalDto } from '../../shared/models/rental.dto';
+
+export interface Rental {
+  id: number;
+  customer: {
+    personID: string;
+    fullName: string;
+  };
+  car: {
+    id: number;
+    type: string;
+    model: string;
+  };
+  startDate: string;
+  endDate: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class RentalService {
+  private rentals: Rental[] = [
+    {
+      id: 1,
+      customer: { personID: '12345678', fullName: 'Juan Pérez' },
+      car: { id: 10, type: 'SUV', model: 'Toyota RAV4' },
+      startDate: '2024-05-01',
+      endDate: '2024-05-07',
+    },
+    {
+      id: 2,
+      customer: { personID: '87654321', fullName: 'Ana Gómez' },
+      car: { id: 12, type: 'Sedan', model: 'Honda Civic' },
+      startDate: '2024-05-10',
+      endDate: '2024-05-15',
+    },
+  ];
 
   constructor() { }
 
@@ -31,5 +62,14 @@ export class RentalService {
         return this.createRental(rentalWithCustomerId);
       })
     );
+  }
+
+  getRentals(): Observable<Rental[]> {
+    return of(this.rentals).pipe(delay(1000));
+  }
+
+  cancelRental(id: number): Observable<boolean> {
+    this.rentals = this.rentals.filter((r) => r.id !== id);
+    return of(true).pipe(delay(500));
   }
 }
