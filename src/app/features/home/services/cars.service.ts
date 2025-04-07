@@ -1,31 +1,31 @@
 import { Injectable } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CarDto } from '../../shared/models/car.dto';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarsService {
-  constructor() { }
+  private readonly API_URL = 'https://localhost:44329/api/cars';
 
-  getAvailableCars(startDate: string, endDate: string, filter: string): Observable<CarDto[]> {
-    const allCars: CarDto[] = [
-      { id: 1, type: 'SUV', model: 'Toyota RAV4' },
-      { id: 2, type: 'Sedan', model: 'Honda Civic' },
-      { id: 3, type: 'Truck', model: 'Ford F-150' },
-      { id: 4, type: 'Compact', model: 'Chevrolet Spark' },
-    ];
+  constructor(private http: HttpClient) { }
 
-    // Simulamos el filtrado por tipo o modelo
-    const filtered = allCars.filter(car =>
-      car.type.toLowerCase().includes(filter.toLowerCase()) ||
-      car.model.toLowerCase().includes(filter.toLowerCase())
-    );
+  getAvailableCars(startDate: string | Date, endDate: string | Date, filter: string): Observable<CarDto[]> {
+    const formatDate = (date: string | Date): string => {
+      const d = new Date(date);
+      return d.toISOString().split('T')[0];
+    };
 
-    return of(filtered).pipe(delay(500));
+    const params = new HttpParams()
+      .set('startDate', formatDate(startDate))
+      .set('endDate', formatDate(endDate))
+      .set('filter', filter);
+
+    return this.http.get<CarDto[]>(`${this.API_URL}/available`, { params });
   }
 
-  getMostRentedCar(): Observable<{ type: string; count: number }> {
-    return of({ type: 'SUV', count: 5 }).pipe(delay(500));
+  getMostRentedCarType(): Observable<{ type: string; count: number }> {
+    return this.http.get<{ type: string; count: number }>(`${this.API_URL}/most-rented-type`);
   }
 }
