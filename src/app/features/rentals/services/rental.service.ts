@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CustomerDto } from '../../shared/models/customer.dto';
-import { delay, Observable, of, switchMap } from 'rxjs';
+import { catchError, delay, Observable, of, switchMap, throwError } from 'rxjs';
 import { RentalDto } from '../../shared/models/rental.dto';
 import { HttpClient } from '@angular/common/http';
+import { CustomersService } from './customers.service';
 
 export interface Rental {
   id: number;
@@ -27,27 +28,29 @@ export class RentalService {
   private readonly API_URL = 'https://localhost:44329/api/rentals';
   private rentals: Rental[] = [];
 
-  constructor(private http: HttpClient) { }
-
-  createOrGetCustomer(customer: CustomerDto) {
-    console.log('Simulating customer API call with:', customer);
-    const generatedCustomerId = Math.floor(Math.random() * 10000);
-    return of({ id: generatedCustomerId }).pipe(delay(1000));
-  }
+  constructor(private http: HttpClient, private customersService: CustomersService) { }
 
   createRental(rental: RentalDto) {
-    console.log('Simulating rental API call with:', rental);
-    return of({ success: true }).pipe(delay(1000));
+    return this.http.post(`${this.API_URL}`, rental);
   }
 
   registerRentalWithCustomer(customer: CustomerDto, rental: Omit<RentalDto, 'customerId'>) {
-    return this.createOrGetCustomer(customer).pipe(
-      switchMap((response) => {
+    return this.customersService.createOrGetCustomer(customer).pipe(
+      switchMap((createdCustomer) => {
+        if (!createdCustomer.id) {
+          throw new Error('CustomerId is missing from the response');
+        }
+
         const rentalWithCustomerId: RentalDto = {
           ...rental,
-          customerId: response.id
+          customerId: createdCustomer.id
         };
+
         return this.createRental(rentalWithCustomerId);
+      }),
+      catchError((error) => {
+        console.error('Error registering rental with customer:', error);
+        return throwError(() => error);
       })
     );
   }

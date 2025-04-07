@@ -74,11 +74,13 @@ export class RentalFormComponent {
   }
 
   confirmReservation() {
+    if (this.rentalForm.invalid || !this.selectedCar) return;
+
     this.isSubmitting = true;
     const { personId, fullName, address, startDate, endDate } = this.rentalForm.value;
 
     const customer: CustomerDto = {
-      personId: personId,
+      personId,
       fullName,
       address
     };
@@ -86,31 +88,28 @@ export class RentalFormComponent {
     const rental = {
       carId: this.selectedCar.id,
       startDate,
-      endDate,
+      endDate
     };
 
-    const observable = this.editMode
+    const request$ = this.editMode
       ? this.rentalService.updateRental(this.rentalId!, customer, rental)
       : this.rentalService.registerRentalWithCustomer(customer, rental);
 
-    observable.subscribe({
+    request$.subscribe({
       next: () => {
-        this.snackBar.open(
-          this.editMode ? 'Reservation updated' : 'Reservation successfully confirmed',
-          'Close',
-          { duration: 2000 }
-        );
+        const msg = this.editMode ? 'Reservation updated' : 'Reservation successfully confirmed';
+        this.snackBar.open(msg, 'Close', { duration: 2000 });
         this.rentalForm.reset();
         this.step = 1;
         this.router.navigate(['/rentals']);
-        this.isSubmitting = false;
       },
-      error: () => {
-        this.snackBar.open('Error while saving reservation', 'Close', {
-          duration: 2000,
-        });
-        this.isSubmitting = false;
+      error: (err) => {
+        const msg = err?.error?.message || 'Error while saving reservation';
+        this.snackBar.open(msg, 'Close', { duration: 3000 });
       },
+      complete: () => {
+        this.isSubmitting = false;
+      }
     });
   }
 
