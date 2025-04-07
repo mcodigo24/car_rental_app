@@ -16,7 +16,7 @@ export class RentalListComponent {
   isLoading = false;
 
   displayedColumns: string[] = [
-    'id', 'personID', 'fullName', 'address', 'carId', 'carType', 'carModel', 'startDate', 'endDate', 'actions'
+    'id', 'personId', 'fullName', 'address', 'carId', 'carType', 'carModel', 'startDate', 'endDate', 'actions'
   ];
 
   constructor(private rentalService: RentalService, private router: Router, private snackBar: MatSnackBar) { }
@@ -27,18 +27,31 @@ export class RentalListComponent {
 
   fetchRentals() {
     this.isLoading = true;
-    this.rentalService.getRentals().subscribe((data) => {
-      this.rentals = data;
-      this.isLoading = false;
+    this.rentalService.getRentals().subscribe({
+      next: (data) => {
+        this.rentals = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error fetching rentals:', err);
+        this.rentals = [];
+        this.isLoading = false;
+      }
     });
   }
 
   cancelRental(id: number) {
     const confirmed = window.confirm('Are you sure you want to cancel this reservation?');
     if (confirmed) {
-      this.rentalService.cancelRental(id).subscribe(() => {
-        this.fetchRentals();
-        this.snackBar.open('Reservation cancelled successfully', 'Close', { duration: 2000 });
+      this.rentalService.cancelRental(id).subscribe({
+        next: () => {
+          this.snackBar.open('Rental cancelled successfully', 'Close', { duration: 2000 });
+          this.fetchRentals();
+        },
+        error: (err) => {
+          console.error('Error cancelling rental:', err);
+          this.snackBar.open('Error cancelling rental. Please try again.', 'Close', { duration: 3000 });
+        }
       });
     }
   }
@@ -48,7 +61,7 @@ export class RentalListComponent {
       state: {
         editMode: true,
         rentalId: rental.id,
-        personID: rental.customer?.personID,
+        personId: rental.customer?.personId,
         fullName: rental.customer?.fullName,
         address: rental.customer?.address,
         startDate: rental.startDate,

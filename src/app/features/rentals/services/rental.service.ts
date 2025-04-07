@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { CustomerDto } from '../../shared/models/customer.dto';
 import { delay, Observable, of, switchMap } from 'rxjs';
 import { RentalDto } from '../../shared/models/rental.dto';
+import { HttpClient } from '@angular/common/http';
 
 export interface Rental {
   id: number;
   customer: {
-    personID: string;
+    personId: string;
     fullName: string;
     address: string;
   };
@@ -23,31 +24,10 @@ export interface Rental {
   providedIn: 'root'
 })
 export class RentalService {
-  private rentals: Rental[] = [
-    {
-      id: 1,
-      customer: { personID: '12345678', fullName: 'Juan Pérez', address: 'Av siempreviva 123' },
-      car: { id: 10, type: 'Sedan', model: 'Toyota Corolla' },
-      startDate: '2025-04-01',
-      endDate: '2025-04-05',
-    },
-    {
-      id: 2,
-      customer: { personID: '87654321', fullName: 'Ana Gómez', address: 'Av siempreviva 123' },
-      car: { id: 12, type: 'Sedan', model: 'Fiat Cronos' },
-      startDate: '2025-05-10',
-      endDate: '2025-05-15',
-    },
-    {
-      id: 3,
-      customer: { personID: '87654321', fullName: 'Maria Fernandez', address: 'Av siempreviva 123' },
-      car: { id: 12, type: 'SUV', model: 'Chevrolet Tracker' },
-      startDate: '2025-06-03',
-      endDate: '2025-06-22',
-    },
-  ];
+  private readonly API_URL = 'https://localhost:44329/api/rentals';
+  private rentals: Rental[] = [];
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   createOrGetCustomer(customer: CustomerDto) {
     console.log('Simulating customer API call with:', customer);
@@ -73,12 +53,11 @@ export class RentalService {
   }
 
   getRentals(): Observable<Rental[]> {
-    return of(this.rentals).pipe(delay(1000));
+    return this.http.get<Rental[]>(`${this.API_URL}`);
   }
 
-  cancelRental(id: number): Observable<boolean> {
-    this.rentals = this.rentals.filter((r) => r.id !== id);
-    return of(true).pipe(delay(500));
+  cancelRental(id: number): Observable<void> {
+    return this.http.patch<void>(`${this.API_URL}/${id}/cancel`, {});
   }
 
   updateRental(

@@ -56,7 +56,7 @@ export class RentalFormComponent {
     this.rentalId = state?.['rentalId'];
 
     this.rentalForm = this.fb.group({
-      personID: [state?.['personID'] || '', [Validators.required, Validators.minLength(7)]],
+      personId: [state?.['personId'] || '', [Validators.required, Validators.minLength(7)]],
       fullName: [state?.['fullName'] || '', Validators.required],
       address: [state?.['address'] || '', Validators.required],
       startDate: [startDate ? new Date(startDate) : '', Validators.required],
@@ -75,10 +75,10 @@ export class RentalFormComponent {
 
   confirmReservation() {
     this.isSubmitting = true;
-    const { personID, fullName, address, startDate, endDate } = this.rentalForm.value;
+    const { personId, fullName, address, startDate, endDate } = this.rentalForm.value;
 
     const customer: CustomerDto = {
-      personID: personID,
+      personId: personId,
       fullName,
       address
     };
