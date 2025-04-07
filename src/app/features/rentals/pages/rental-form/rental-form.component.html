@@ -11,6 +11,10 @@
       <p><strong>Model:</strong> {{ selectedCar.model }}</p>
     </section>
 
+    <div *ngIf="editMode" class="edit-banner">
+      Editing Reservation #{{ rentalId }}
+    </div>
+
     <mat-card-content>
       <form [formGroup]="rentalForm" class="form-fields">
         <mat-form-field appearance="fill">

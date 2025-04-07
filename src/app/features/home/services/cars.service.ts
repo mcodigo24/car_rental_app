@@ -24,4 +24,8 @@ export class CarsService {
 
     return of(filtered).pipe(delay(500));
   }
+
+  getMostRentedCar(): Observable<{ type: string; count: number }> {
+    return of({ type: 'SUV', count: 5 }).pipe(delay(500));
+  }
 }

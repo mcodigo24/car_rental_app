@@ -14,10 +14,17 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   availableCars: CarDto[] = [];
   loading = false;
+  mostRentedCarInfo: { type: string, count: number } | null = null;
 
   constructor(private carsService: CarsService, private router: Router) { }
 
   filters!: { startDate: string; endDate: string; filter: string };
+
+  ngOnInit() {
+    this.carsService.getMostRentedCar().subscribe(info => {
+      this.mostRentedCarInfo = info;
+    });
+  }
 
   onFormSubmitted(filters: { startDate: string; endDate: string; filter: string }) {
     this.loading = true;

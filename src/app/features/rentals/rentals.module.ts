@@ -14,6 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { RentalListComponent } from './pages/rental-list/rental-list.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,9 @@ import { RentalListComponent } from './pages/rental-list/rental-list.component';
     MatGridListModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatTableModule
+    MatTableModule,
+    MatIconModule,
+    MatTooltip
   ]
 })
 export class RentalsModule { }

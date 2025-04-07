@@ -1,4 +1,11 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .main-content {
-  padding: 1rem;
-  min-height: calc(100vh - 128px); // Altura de header + footer estimada
+  flex: 1;
+  padding: 0.5rem;
+  background-color: #f9f9f9;
 }

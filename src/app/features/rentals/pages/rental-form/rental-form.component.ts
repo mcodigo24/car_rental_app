@@ -36,6 +36,8 @@ export class RentalFormComponent {
   selectedCar!: CarDto;
   step = 1;
   isSubmitting = false;
+  editMode = false;
+  rentalId?: number;
 
   constructor(
     private fb: FormBuilder,
@@ -44,14 +46,19 @@ export class RentalFormComponent {
     private rentalService: RentalService
   ) {
     const nav = this.router.getCurrentNavigation();
+    const state = nav?.extras?.state;
+
     this.selectedCar = nav?.extras?.state?.['selectedCar'];
     const startDate = nav?.extras?.state?.['startDate'];
     const endDate = nav?.extras?.state?.['endDate'];
 
+    this.editMode = !!state?.['editMode'];
+    this.rentalId = state?.['rentalId'];
+
     this.rentalForm = this.fb.group({
-      personID: ['', [Validators.required, Validators.minLength(7)]],
-      fullName: ['', Validators.required],
-      address: ['', Validators.required],
+      personID: [state?.['personID'] || '', [Validators.required, Validators.minLength(7)]],
+      fullName: [state?.['fullName'] || '', Validators.required],
+      address: [state?.['address'] || '', Validators.required],
       startDate: [startDate ? new Date(startDate) : '', Validators.required],
       endDate: [endDate ? new Date(endDate) : '', Validators.required],
     },
@@ -82,18 +89,24 @@ export class RentalFormComponent {
       endDate,
     };
 
-    this.rentalService.registerRentalWithCustomer(customer, rental).subscribe({
+    const observable = this.editMode
+      ? this.rentalService.updateRental(this.rentalId!, customer, rental)
+      : this.rentalService.registerRentalWithCustomer(customer, rental);
+
+    observable.subscribe({
       next: () => {
-        this.snackBar.open('Reservation successfully confirmed', 'Close', {
-          duration: 2000,
-        });
+        this.snackBar.open(
+          this.editMode ? 'Reservation updated' : 'Reservation successfully confirmed',
+          'Close',
+          { duration: 2000 }
+        );
         this.rentalForm.reset();
         this.step = 1;
-        this.router.navigate(['/']);
+        this.router.navigate(['/rentals']);
         this.isSubmitting = false;
       },
       error: () => {
-        this.snackBar.open('Error while confirming reservation', 'Close', {
+        this.snackBar.open('Error while saving reservation', 'Close', {
           duration: 2000,
         });
         this.isSubmitting = false;

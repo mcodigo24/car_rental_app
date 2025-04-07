@@ -1,5 +1,8 @@
 <div class="rental-list-container">
-  <h2 class="title">All Rentals</h2>
+  <div class="header-actions">
+    <h2>All Rentals</h2>
+    <button mat-raised-button color="primary" routerLink="/">New Rent</button>
+  </div>
 
   <div *ngIf="isLoading" class="loading-container">
     <mat-spinner diameter="50"></mat-spinner>
@@ -17,31 +20,43 @@
       <!-- Person ID -->
       <ng-container matColumnDef="personID">
         <mat-header-cell *matHeaderCellDef> Person ID </mat-header-cell>
-        <mat-cell *matCellDef="let rental"> {{ rental.personID }} </mat-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.personID }}
+        </mat-cell>
       </ng-container>
 
       <!-- Full Name -->
       <ng-container matColumnDef="fullName">
         <mat-header-cell *matHeaderCellDef> Full Name </mat-header-cell>
-        <mat-cell *matCellDef="let rental"> {{ rental.fullName }} </mat-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.fullName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Address -->
+      <ng-container matColumnDef="address">
+        <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.address }}
+        </mat-cell>
       </ng-container>
 
       <!-- Car ID -->
       <ng-container matColumnDef="carId">
         <mat-header-cell *matHeaderCellDef> Car ID </mat-header-cell>
-        <mat-cell *matCellDef="let rental"> {{ rental.carId }} </mat-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.car.id }} </mat-cell>
       </ng-container>
 
       <!-- Car Type -->
       <ng-container matColumnDef="carType">
         <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
-        <mat-cell *matCellDef="let rental"> {{ rental.carType }} </mat-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.car.type }} </mat-cell>
       </ng-container>
 
       <!-- Car Model -->
       <ng-container matColumnDef="carModel">
         <mat-header-cell *matHeaderCellDef> Model </mat-header-cell>
-        <mat-cell *matCellDef="let rental"> {{ rental.carModel }} </mat-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.car.model }} </mat-cell>
       </ng-container>
 
       <!-- Start Date -->
@@ -65,12 +80,19 @@
         <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
         <mat-cell *matCellDef="let rental">
           <button
-            mat-button
+            mat-icon-button
+            (click)="editRental(rental)"
+            matTooltip="Edit"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
             color="warn"
             (click)="cancelRental(rental.id)"
-            class="cancel-button"
+            matTooltip="Cancel"
           >
-            Cancel
+            <mat-icon>cancel</mat-icon>
           </button>
         </mat-cell>
       </ng-container>
@@ -83,7 +105,6 @@
     </mat-table>
   </div>
 
-  <!-- No rentals -->
   <div *ngIf="!isLoading && rentals.length === 0" class="no-rentals">
     <p>No rentals available.</p>
   </div>

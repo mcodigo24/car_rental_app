@@ -5,7 +5,7 @@ import { RentalListComponent } from './pages/rental-list/rental-list.component';
 
 const routes: Routes = [
   { path: 'register', component: RentalFormComponent },
-  { path: 'list', component: RentalListComponent },
+  { path: '', component: RentalListComponent },
 ];
 
 @NgModule({
