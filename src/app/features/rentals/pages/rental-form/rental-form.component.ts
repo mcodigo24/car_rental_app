@@ -38,6 +38,7 @@ export class RentalFormComponent {
   isSubmitting = false;
   editMode = false;
   rentalId?: number;
+  customerId?: number;
 
   constructor(
     private fb: FormBuilder,
@@ -49,8 +50,10 @@ export class RentalFormComponent {
     const state = nav?.extras?.state;
 
     this.selectedCar = nav?.extras?.state?.['selectedCar'];
+
     const startDate = nav?.extras?.state?.['startDate'];
     const endDate = nav?.extras?.state?.['endDate'];
+    this.customerId = state?.['customerId'];
 
     this.editMode = !!state?.['editMode'];
     this.rentalId = state?.['rentalId'];
@@ -80,6 +83,7 @@ export class RentalFormComponent {
     const { personId, fullName, address, startDate, endDate } = this.rentalForm.value;
 
     const customer: CustomerDto = {
+      id: this.customerId,
       personId,
       fullName,
       address
@@ -91,11 +95,13 @@ export class RentalFormComponent {
       endDate
     };
 
-    const request$ = this.editMode
-      ? this.rentalService.updateRental(this.rentalId!, customer, rental)
+    console.log(rental);
+
+    const request = this.editMode
+      ? this.rentalService.updateRentalWithCustomer(this.rentalId!, customer, rental)
       : this.rentalService.registerRentalWithCustomer(customer, rental);
 
-    request$.subscribe({
+    request.subscribe({
       next: () => {
         const msg = this.editMode ? 'Reservation updated' : 'Reservation successfully confirmed';
         this.snackBar.open(msg, 'Close', { duration: 2000 });

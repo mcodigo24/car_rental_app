@@ -30,11 +30,11 @@ export class RentalService {
 
   constructor(private http: HttpClient, private customersService: CustomersService) { }
 
-  createRental(rental: RentalDto) {
+  createRental(rental: RentalDto): Observable<any> {
     return this.http.post(`${this.API_URL}`, rental);
   }
 
-  registerRentalWithCustomer(customer: CustomerDto, rental: Omit<RentalDto, 'customerId'>) {
+  registerRentalWithCustomer(customer: CustomerDto, rental: Omit<RentalDto, 'customerId'>): Observable<any> {
     return this.customersService.createOrGetCustomer(customer).pipe(
       switchMap((createdCustomer) => {
         if (!createdCustomer.id) {
@@ -63,15 +63,27 @@ export class RentalService {
     return this.http.patch<void>(`${this.API_URL}/${id}/cancel`, {});
   }
 
-  updateRental(
-    rentalId: number,
-    customer: CustomerDto,
-    rental: { carId: number; startDate: string; endDate: string }
-  ) {
-    console.log('Mock updating rental with ID:', rentalId);
-    console.log('Updated customer:', customer);
-    console.log('Updated rental info:', rental);
+  updateRental(rental: RentalDto): Observable<any> {
+    return this.http.put(`${this.API_URL}`, rental);
+  }
 
-    return of({ success: true }).pipe(delay(1000));
+  updateRentalWithCustomer(rentalId: number, customer: CustomerDto, rental: { carId: number; startDate: string; endDate: string }): Observable<any> {
+    return this.customersService.updateCustomer(customer).pipe(
+      switchMap(() => {
+        const updatedRental: RentalDto = {
+          id: rentalId,
+          customerId: customer.id!,
+          carId: rental.carId,
+          startDate: new Date(rental.startDate),
+          endDate: new Date(rental.endDate),
+        };
+        console.log(updatedRental);
+        return this.updateRental(updatedRental);
+      }),
+      catchError((error) => {
+        console.error('Error updating rental:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }

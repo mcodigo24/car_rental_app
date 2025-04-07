@@ -16,7 +16,7 @@ export class RentalListComponent {
   isLoading = false;
 
   displayedColumns: string[] = [
-    'id', 'personId', 'fullName', 'address', 'carId', 'carType', 'carModel', 'startDate', 'endDate', 'actions'
+    'id', 'customerId', 'personId', 'fullName', 'address', 'carId', 'carType', 'carModel', 'startDate', 'endDate', 'actions'
   ];
 
   constructor(private rentalService: RentalService, private router: Router, private snackBar: MatSnackBar) { }
@@ -66,8 +66,9 @@ export class RentalListComponent {
         address: rental.customer?.address,
         startDate: rental.startDate,
         endDate: rental.endDate,
+        customerId: rental.customer?.id,
         selectedCar: {
-          id: rental.carId,
+          id: rental.car?.id,
           model: rental.car?.model,
           type: rental.car?.type
         }

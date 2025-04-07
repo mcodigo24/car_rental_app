@@ -35,7 +35,7 @@ export class HomeComponent {
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (cars) => (this.availableCars = cars),
-        error: (err) => console.error('Error fetching cars:', err),
+        error: (err) => (this.availableCars = [])
       });
   }
 
