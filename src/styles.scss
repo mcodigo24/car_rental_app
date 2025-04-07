@@ -2,3 +2,11 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.form-error {
+  color: #d32f2f;
+  margin-top: -10px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 500;
+}

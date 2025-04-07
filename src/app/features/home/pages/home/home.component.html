@@ -1,27 +1,49 @@
 <div class="container">
   <h1>Find Your Car</h1>
 
-  <app-car-filter-form
-    (formSubmitted)="onFormSubmitted($event)"
-  ></app-car-filter-form>
+  <div class="most-rented-info" *ngIf="mostRentedCarInfo">
+    <span class="label">Most Rented Car Type:</span>
+    <span class="value"
+      >{{ mostRentedCarInfo.type }} -
+      {{ mostRentedCarInfo.count }} rentals</span
+    >
+  </div>
 
-  <!-- Loading -->
+  <div class="form-wrapper">
+    <app-car-filter-form
+      (formSubmitted)="onFormSubmitted($event)"
+    ></app-car-filter-form>
+  </div>
+
   <div *ngIf="loading" class="loading">
     <mat-spinner></mat-spinner>
     <p>Loading available cars...</p>
   </div>
 
-  <!-- No results -->
   <div *ngIf="!loading && availableCars.length === 0" class="no-results">
     <p>No available cars found for the selected dates or filter.</p>
   </div>
 
-  <!-- Available cars -->
-  <div *ngIf="availableCars.length > 0" class="results">
-    <h2>Available Cars</h2>
-    <mat-card *ngFor="let car of availableCars" class="car-card">
-      <mat-card-title>{{ car.type }}</mat-card-title>
-      <mat-card-subtitle>{{ car.model }}</mat-card-subtitle>
-    </mat-card>
+  <div *ngIf="availableCars.length > 0">
+    <h2 class="available-title">Available Cars</h2>
+    <div class="car-grid">
+      <mat-card *ngFor="let car of availableCars" class="car-card">
+        <div class="car-content">
+          <div>
+            <mat-card-title>{{ car.type }}</mat-card-title>
+            <mat-card-subtitle>{{ car.model }}</mat-card-subtitle>
+          </div>
+          <div>
+            <button
+              mat-raised-button
+              color="accent"
+              (click)="goToReservation(car, filters.startDate, filters.endDate)"
+            >
+              Rent
+            </button>
+          </div>
+        </div>
+      </mat-card>
+    </div>
   </div>
 </div>

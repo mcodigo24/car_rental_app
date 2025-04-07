@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { delay, Observable, of } from 'rxjs';
-import { CarDto } from '../models/car.dto';
+import { CarDto } from '../../shared/models/car.dto';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +23,9 @@ export class CarsService {
     );
 
     return of(filtered).pipe(delay(500));
+  }
+
+  getMostRentedCar(): Observable<{ type: string; count: number }> {
+    return of({ type: 'SUV', count: 5 }).pipe(delay(500));
   }
 }

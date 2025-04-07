@@ -1,0 +1,121 @@
+<div class="container">
+  <mat-card class="rental-card" *ngIf="step === 1" @fade>
+    <div class="header">
+      <h2>Rent: {{ selectedCar.type }} - {{ selectedCar.model }}</h2>
+    </div>
+
+    <mat-divider></mat-divider>
+
+    <section class="car-info">
+      <p><strong>Type:</strong> {{ selectedCar.type }}</p>
+      <p><strong>Model:</strong> {{ selectedCar.model }}</p>
+    </section>
+
+    <div *ngIf="editMode" class="edit-banner">
+      Editing Reservation #{{ rentalId }}
+    </div>
+
+    <mat-card-content>
+      <form [formGroup]="rentalForm" class="form-fields">
+        <mat-form-field appearance="fill">
+          <mat-label>Person ID</mat-label>
+          <input matInput formControlName="personID" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Full Name</mat-label>
+          <input matInput formControlName="fullName" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Address</mat-label>
+          <input matInput formControlName="address" />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Start Date</mat-label>
+          <input
+            matInput
+            [matDatepicker]="picker1"
+            formControlName="startDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker1"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker1></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>End Date</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="endDate" />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker2"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+
+        <div
+          class="form-error"
+          *ngIf="rentalForm.errors?.['dateRangeInvalid'] && rentalForm.touched"
+        >
+          End date cannot be before start date.
+        </div>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button color="warn" (click)="goBack()">Back</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="nextStep()"
+        [disabled]="rentalForm.invalid"
+      >
+        Continue
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<div class="container">
+  <mat-card class="rental-card" *ngIf="step === 2" @fade>
+    <div class="header">
+      <h2>Confirm Reservation</h2>
+    </div>
+    <mat-divider></mat-divider>
+
+    <mat-card-content class="confirmation-info">
+      <p>
+        <strong>Car:</strong> {{ selectedCar.type }} - {{ selectedCar.model }}
+      </p>
+      <p><strong>Person ID:</strong> {{ rentalForm.value.personID }}</p>
+      <p><strong>Full Name:</strong> {{ rentalForm.value.fullName }}</p>
+      <p><strong>Address:</strong> {{ rentalForm.value.address }}</p>
+      <p>
+        <strong>Start Date:</strong> {{ rentalForm.value.startDate | date }}
+      </p>
+      <p><strong>End Date:</strong> {{ rentalForm.value.endDate | date }}</p>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-button (click)="step = 1">Back</button>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="confirmReservation()"
+        [disabled]="isSubmitting"
+      >
+        <mat-progress-spinner
+          *ngIf="isSubmitting"
+          diameter="20"
+          strokeWidth="3"
+          mode="indeterminate"
+          color="primary"
+        ></mat-progress-spinner>
+        <span *ngIf="!isSubmitting">Confirm</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

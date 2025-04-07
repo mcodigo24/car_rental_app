@@ -1,0 +1,111 @@
+<div class="rental-list-container">
+  <div class="header-actions">
+    <h2>All Rentals</h2>
+    <button mat-raised-button color="primary" routerLink="/">New Rent</button>
+  </div>
+
+  <div *ngIf="isLoading" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p class="loading-text">Loading rentals...</p>
+  </div>
+
+  <div *ngIf="!isLoading && rentals.length > 0">
+    <mat-table [dataSource]="rentals" class="mat-elevation-z8 rental-table">
+      <!-- Rental ID -->
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> Rental ID </mat-header-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.id }} </mat-cell>
+      </ng-container>
+
+      <!-- Person ID -->
+      <ng-container matColumnDef="personID">
+        <mat-header-cell *matHeaderCellDef> Person ID </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.personID }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Full Name -->
+      <ng-container matColumnDef="fullName">
+        <mat-header-cell *matHeaderCellDef> Full Name </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.fullName }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Address -->
+      <ng-container matColumnDef="address">
+        <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.address }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Car ID -->
+      <ng-container matColumnDef="carId">
+        <mat-header-cell *matHeaderCellDef> Car ID </mat-header-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.car.id }} </mat-cell>
+      </ng-container>
+
+      <!-- Car Type -->
+      <ng-container matColumnDef="carType">
+        <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.car.type }} </mat-cell>
+      </ng-container>
+
+      <!-- Car Model -->
+      <ng-container matColumnDef="carModel">
+        <mat-header-cell *matHeaderCellDef> Model </mat-header-cell>
+        <mat-cell *matCellDef="let rental"> {{ rental.car.model }} </mat-cell>
+      </ng-container>
+
+      <!-- Start Date -->
+      <ng-container matColumnDef="startDate">
+        <mat-header-cell *matHeaderCellDef> Start Date </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.startDate | date }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- End Date -->
+      <ng-container matColumnDef="endDate">
+        <mat-header-cell *matHeaderCellDef> End Date </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.endDate | date }}
+        </mat-cell>
+      </ng-container>
+
+      <!-- Actions -->
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef> Actions </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          <button
+            mat-icon-button
+            (click)="editRental(rental)"
+            matTooltip="Edit"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            color="warn"
+            (click)="cancelRental(rental.id)"
+            matTooltip="Cancel"
+          >
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row"
+      ></mat-row>
+    </mat-table>
+  </div>
+
+  <div *ngIf="!isLoading && rentals.length === 0" class="no-rentals">
+    <p>No rentals available.</p>
+  </div>
+</div>

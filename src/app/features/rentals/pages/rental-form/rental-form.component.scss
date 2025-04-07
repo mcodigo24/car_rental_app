@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 24px;
+}
+
+.rental-card {
+  width: 100%;
+  max-width: 600px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 16px;
+
+  h2 {
+    margin: 0;
+    font-weight: 600;
+  }
+}
+
+.car-info {  
+  font-size: 15px;
+  padding: 8px 0;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding-left: 12px;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.confirmation-info {
+  font-size: 16px;
+  padding-top: 8px;
+  line-height: 1.6;
+}
+
+.edit-banner {  
+  color: #326da1;   
+  padding-left: 12px;
+  margin-bottom: 25px; 
+  font-weight: bold;
+}
