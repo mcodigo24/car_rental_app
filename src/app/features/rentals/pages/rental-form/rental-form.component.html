@@ -19,7 +19,7 @@
       <form [formGroup]="rentalForm" class="form-fields">
         <mat-form-field appearance="fill">
           <mat-label>Person ID</mat-label>
-          <input matInput formControlName="personID" />
+          <input matInput formControlName="personId" />
         </mat-form-field>
 
         <mat-form-field appearance="fill">
@@ -90,7 +90,7 @@
       <p>
         <strong>Car:</strong> {{ selectedCar.type }} - {{ selectedCar.model }}
       </p>
-      <p><strong>Person ID:</strong> {{ rentalForm.value.personID }}</p>
+      <p><strong>Person ID:</strong> {{ rentalForm.value.personId }}</p>
       <p><strong>Full Name:</strong> {{ rentalForm.value.fullName }}</p>
       <p><strong>Address:</strong> {{ rentalForm.value.address }}</p>
       <p>

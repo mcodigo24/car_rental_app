@@ -17,11 +17,19 @@
         <mat-cell *matCellDef="let rental"> {{ rental.id }} </mat-cell>
       </ng-container>
 
+      <!-- Customer ID -->
+      <ng-container matColumnDef="customerId">
+        <mat-header-cell *matHeaderCellDef> Customer Id </mat-header-cell>
+        <mat-cell *matCellDef="let rental">
+          {{ rental.customer.id }}
+        </mat-cell>
+      </ng-container>
+
       <!-- Person ID -->
-      <ng-container matColumnDef="personID">
+      <ng-container matColumnDef="personId">
         <mat-header-cell *matHeaderCellDef> Person ID </mat-header-cell>
         <mat-cell *matCellDef="let rental">
-          {{ rental.customer.personID }}
+          {{ rental.customer.personId }}
         </mat-cell>
       </ng-container>
 

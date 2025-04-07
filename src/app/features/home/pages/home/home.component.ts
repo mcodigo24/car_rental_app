@@ -14,15 +14,15 @@ import { Router } from '@angular/router';
 export class HomeComponent {
   availableCars: CarDto[] = [];
   loading = false;
-  mostRentedCarInfo: { type: string, count: number } | null = null;
+  mostRentedCarTypeInfo: { type: string, count: number } | null = null;
 
   constructor(private carsService: CarsService, private router: Router) { }
 
   filters!: { startDate: string; endDate: string; filter: string };
 
   ngOnInit() {
-    this.carsService.getMostRentedCar().subscribe(info => {
-      this.mostRentedCarInfo = info;
+    this.carsService.getMostRentedCarType().subscribe(info => {
+      this.mostRentedCarTypeInfo = info;
     });
   }
 
@@ -35,7 +35,7 @@ export class HomeComponent {
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
         next: (cars) => (this.availableCars = cars),
-        error: (err) => console.error('Error fetching cars:', err),
+        error: (err) => (this.availableCars = [])
       });
   }
 

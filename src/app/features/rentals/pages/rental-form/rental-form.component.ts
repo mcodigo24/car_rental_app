@@ -38,6 +38,7 @@ export class RentalFormComponent {
   isSubmitting = false;
   editMode = false;
   rentalId?: number;
+  customerId?: number;
 
   constructor(
     private fb: FormBuilder,
@@ -49,14 +50,16 @@ export class RentalFormComponent {
     const state = nav?.extras?.state;
 
     this.selectedCar = nav?.extras?.state?.['selectedCar'];
+
     const startDate = nav?.extras?.state?.['startDate'];
     const endDate = nav?.extras?.state?.['endDate'];
+    this.customerId = state?.['customerId'];
 
     this.editMode = !!state?.['editMode'];
     this.rentalId = state?.['rentalId'];
 
     this.rentalForm = this.fb.group({
-      personID: [state?.['personID'] || '', [Validators.required, Validators.minLength(7)]],
+      personId: [state?.['personId'] || '', [Validators.required, Validators.minLength(7)]],
       fullName: [state?.['fullName'] || '', Validators.required],
       address: [state?.['address'] || '', Validators.required],
       startDate: [startDate ? new Date(startDate) : '', Validators.required],
@@ -74,11 +77,14 @@ export class RentalFormComponent {
   }
 
   confirmReservation() {
+    if (this.rentalForm.invalid || !this.selectedCar) return;
+
     this.isSubmitting = true;
-    const { personID, fullName, address, startDate, endDate } = this.rentalForm.value;
+    const { personId, fullName, address, startDate, endDate } = this.rentalForm.value;
 
     const customer: CustomerDto = {
-      personID: personID,
+      id: this.customerId,
+      personId,
       fullName,
       address
     };
@@ -86,31 +92,30 @@ export class RentalFormComponent {
     const rental = {
       carId: this.selectedCar.id,
       startDate,
-      endDate,
+      endDate
     };
 
-    const observable = this.editMode
-      ? this.rentalService.updateRental(this.rentalId!, customer, rental)
+    console.log(rental);
+
+    const request = this.editMode
+      ? this.rentalService.updateRentalWithCustomer(this.rentalId!, customer, rental)
       : this.rentalService.registerRentalWithCustomer(customer, rental);
 
-    observable.subscribe({
+    request.subscribe({
       next: () => {
-        this.snackBar.open(
-          this.editMode ? 'Reservation updated' : 'Reservation successfully confirmed',
-          'Close',
-          { duration: 2000 }
-        );
+        const msg = this.editMode ? 'Reservation updated' : 'Reservation successfully confirmed';
+        this.snackBar.open(msg, 'Close', { duration: 2000 });
         this.rentalForm.reset();
         this.step = 1;
         this.router.navigate(['/rentals']);
-        this.isSubmitting = false;
       },
-      error: () => {
-        this.snackBar.open('Error while saving reservation', 'Close', {
-          duration: 2000,
-        });
-        this.isSubmitting = false;
+      error: (err) => {
+        const msg = err?.error?.message || 'Error while saving reservation';
+        this.snackBar.open(msg, 'Close', { duration: 3000 });
       },
+      complete: () => {
+        this.isSubmitting = false;
+      }
     });
   }
 
